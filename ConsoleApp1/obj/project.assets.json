@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectUniqueName": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\Barcode-lib\\ConsoleApp1\\ConsoleApp1.csproj",
       "projectName": "ConsoleApp1",
-      "projectPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\Barcode-lib\\ConsoleApp1\\ConsoleApp1.csproj",
       "packagesPath": "C:\\Users\\Home\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\ConsoleApp1\\obj\\",
+      "outputPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\Barcode-lib\\ConsoleApp1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Home\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -53,8 +53,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\ClassLibrary1\\ClassLibrary1.csproj": {
-              "projectPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\ClassLibrary1\\ClassLibrary1.csproj"
+            "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\Barcode-lib\\ClassLibrary1\\ClassLibrary1.csproj": {
+              "projectPath": "C:\\Users\\Home\\source\\repos\\ClassLibrary1\\Barcode-lib\\ClassLibrary1\\ClassLibrary1.csproj"
             }
           }
         }

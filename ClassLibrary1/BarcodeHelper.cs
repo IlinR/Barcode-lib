@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace ClassLibrary1
 {
@@ -10,110 +11,97 @@ namespace ClassLibrary1
     {
         public static string getCode(string str)
         {
-            string code = "";
-            foreach (char c in str)
-            {
-                code += Patterns[Array.IndexOf(TextSymbols, c.ToString())];
-            }
-            return code;
+            StringBuilder code = new StringBuilder();
+            IList<int> price = new List<int>();
+            int i = 0; bool encodeModeDigit = true;
+            StartPatern(str,code,ref encodeModeDigit,price);    
+            while (i<str.Length)
+                encode(str, code, price, ref encodeModeDigit,ref i);
+            EndPatern(code,price);
+            return code.ToString();
         }
-        private static void Sample(string a, StringBuilder b, IList<int> c, ref bool inTextMode, ref int e)
-
+        private static void StartPatern(string str, StringBuilder code,ref bool encodeModeDigit,IList<int> price)
         {
-
-            if ((inTextMode && !isAllDigits(a, e, 2)) || (!inTextMode && isAllDigits(a, e, 4)))
-
+            if (!isAllDigits(str, 0, 2))
             {
-
-                inTextMode = !inTextMode;
-                addPatern(b, c, inTextMode ? SwitchToNumbers : SwitchToText);
-                    
+                encodeModeDigit = false;
+                addPatern(code, price, StartText);
             }
-
-            getPatern(ref e, c, inTextMode, a, b);
-
+            else addPatern(code, price, StartNumbers);
+        }
+        private static void EndPatern(StringBuilder code, IList<int> price)
+        {
+            addPatern(code, price, getCheckSum(price));
+            addPatern(code, price, Stop);
+        }
+        private static void encode(string text, StringBuilder code, IList<int> pricelist, ref bool inDigitMode, ref int current)
+        {
+            if ((inDigitMode && !isAllDigits(text, current, 2)) || (!inDigitMode && isAllDigits(text, current, 4)))
+            {
+                inDigitMode = !inDigitMode;
+                addPatern(code, pricelist, inDigitMode ? SwitchToNumbers : SwitchToText);
+            }
+            getPatern(ref current, pricelist, inDigitMode, text, code);
         }
 
-        private static void getPatern(ref int a, IList<int> b, bool isNumbers, string d, StringBuilder e)
-
+        private static void getPatern(ref int current, IList<int> pricelist, bool isNumbers, string text, StringBuilder codeStr)
         {
-
             if (isNumbers)
-
             {
-
-                addPatern(e, b, Array.IndexOf(NumberSymbols, d.Substring(a, 2)));
-
-                a += 2;
-
+                addPatern(codeStr, pricelist, Array.IndexOf(NumberSymbols, text.Substring(current, 2)));
+                current += 2;
             }
-
             else
-
             {
-
-                addPatern(e, b, Array.IndexOf(TextSymbols, d.Substring(a, 1)));
-
-                a++;
-
+                addPatern(codeStr, pricelist, Array.IndexOf(TextSymbols, text.Substring(current, 1)));
+                current++;
             }
-
         }
 
-        private static void addPatern(StringBuilder codeStr, IList<int> b, int c)
-
+        private static void addPatern(StringBuilder codeStr, IList<int> pricelist, int symbol)
         {
-
-            codeStr.Append(Patterns[c]);
-
-            b.Add(c);
-
+            codeStr.Append(Patterns[symbol]);
+            pricelist.Add(symbol);
         }
 
         private static bool isAllDigits(string str, int firstel, int length)
-
         {
-
             var chars = str.Skip(firstel).Take(length);
-
             return chars.Count() == length && chars.All(x => char.IsDigit(x));
-
         }
 
-        private static int getCheckPattern(IList<int> a)
-
+        private static int getCheckSum(IList<int> pricelist)
         {
-
-            var sum = a[0];
-
-            for (var i = 1; i < a.Count; i++)
-
+            var sum = pricelist[0];
+            for (var i = 1; i < pricelist.Count; i++)
             {
-
-                sum += i * a[i];
-
+                sum += i * pricelist[i];
             }
-
             sum %= 103;
-
             return sum;
-
         }
 
-        private static char Sample(string a) => Bars[Convert.ToInt32(a, 2)];
-
-        private static IEnumerable<string> Sample(this string a, int b)
-
+        private static char getBar(string code) => Bars[Convert.ToInt32(code, 2)];
+        private static IEnumerable<string> SplitStr(this string str, int length)
         {
-
-            return Enumerable.Range(0, a.Length / b).Select(i => a.Substring(i * b, b));
-
+            return Enumerable.Range(0, str.Length / length).Select(i => str.Substring(i * length, length));
         }
 
 
+        public static string getBarcode(string code)
+        {
+            int l = code.Length;
+            //var sb = string.Join("", code.PadLeft(l + 2, '0').PadRight(l + 2, '0').SplitStr(2).Select(getBar));
+            var s = string.Join("", code.PadLeft(l + 2, '0').PadRight(l + 4, '0').SplitStr(2).Select(getBar));
+            var rs = string.Join("\n",Enumerable.Repeat(s, Height));
+            var ps = string.Join("",new string('0', l + 4).SplitStr(2).Select(getBar));
 
+            return ps + "\n" + rs + "\n" + ps ;
+        }
+        private const int Height = 5;
+        public static readonly char[] Bars = { '█', '▌', '▐', ' ' };
 
-        private const string StartText = "00000011010010000";
+        private const int StartText = 104;
         private const int StartNumbers = 105;
         private const int SwitchToText = 100;
 
@@ -210,7 +198,7 @@ namespace ClassLibrary1
         "90","91","92","93","94","95","96","97","98","99"
 
     };
-        private const string Stop = "1100011101011000000";
+        private const int Stop = 108;
         private const int SwitchToNumbers = 99;
     }
 }
